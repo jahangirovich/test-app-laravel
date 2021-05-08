@@ -18,13 +18,23 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', 'App\Http\Controllers\API\AuthController@register');
-Route::post('/login', 'App\Http\Controllers\API\AuthController@login');
-// Route::get('/login', 'App\Http\Controllers\API\AuthController@login')->name('login');
+// Route::post('/register', 'App\Http\Controllers\API\AuthController@register');
+// Route::post('/login', 'App\Http\Controllers\API\AuthController@login');
+// // Route::get('/login', 'App\Http\Controllers\API\AuthController@login')->name('login');
 
-Route::get('/', 'App\Http\Controllers\API\TaskController@index');
-Route::post('/create', 'App\Http\Controllers\API\TaskController@store');
+// Route::get('/', 'App\Http\Controllers\API\TaskController@index');
+// Route::post('/create', 'App\Http\Controllers\API\TaskController@store');
 
-Route::group(['middleware' => 'auth:api'], function(){
-    Route::post('/edit/{id}', 'App\Http\Controllers\API\TaskController@update');
+Route::group(['middleware' => ['cors']], function () {
+    Route::post('/register', 'App\Http\Controllers\API\AuthController@register');
+    Route::post('/login', 'App\Http\Controllers\API\AuthController@login');
+    // Route::get('/login', 'App\Http\Controllers\API\AuthController@login')->name('login');
+
+    Route::get('/', 'App\Http\Controllers\API\TaskController@index');
+    Route::post('/create', 'App\Http\Controllers\API\TaskController@store');
+
+    Route::group(['middleware' => 'auth:api'], function(){
+        Route::post('/edit/{id}', 'App\Http\Controllers\API\TaskController@update');
+    });
 });
+
