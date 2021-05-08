@@ -52,7 +52,15 @@ class TaskController extends Controller
         ]);
 
         if($validator->fails()){
-            return response(['error' => $validator->errors(), $request["username"]]);
+            $failedRules = $validator->failed();
+
+            if(isset($failedRules["username"])){
+                return $this->handler("error", ["username"=>"Поле является обязательным для заполнения"],400);
+            }
+            if(isset($failedRules["email"])){
+                return $this->handler("error", ["email"=>"Поле является обязательным для заполнения"],400);
+            }
+            return $this->handler("error", ["text"=>"Поле является обязательным для заполнения"], 400);
         }
 
         $ceo = Tasks::create($data);
@@ -69,6 +77,10 @@ class TaskController extends Controller
     public function show(Tasks $tasks)
     {
         //
+    }
+
+    public function handler($status,$message, $statusCode){
+        return response(["status" => $status, "message" => $message],$statusCode);
     }
 
     /**
