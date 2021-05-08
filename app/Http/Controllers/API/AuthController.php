@@ -38,9 +38,9 @@ class AuthController extends Controller
             $failedRules = $loginData->failed();
 
             if(isset($failedRules["email"])){
-                return $this->handler("error", ["username"=>"Поле является обязательным для заполнения"]);
+                return $this->handler("error", ["username"=>"Поле является обязательным для заполнения"], 400);
             }
-            return $this->handler("error", ["password"=>"Поле является обязательным для заполнения"]);
+            return $this->handler("error", ["password"=>"Поле является обязательным для заполнения"] ,400);
         }
         $credentials = [
             "email"      => $request["email"],
@@ -48,7 +48,7 @@ class AuthController extends Controller
         ];
 
         if (!auth()->attempt($credentials)) {
-            return $this->handler("error", "Неверный логин или пароль");
+            return $this->handler("error", "Неверный логин или пароль",400);
         }
 
         $accessToken = auth()->user()->createToken('authToken')->accessToken;
@@ -57,7 +57,7 @@ class AuthController extends Controller
 
     }
 
-    public function handler($status,$message){
-        return response(["status" => $status, "message" => $message]);
+    public function handler($status,$message,$statusCode = 200){
+        return response(["status" => $status, "message" => $message], $statusCode);
     }
 }
